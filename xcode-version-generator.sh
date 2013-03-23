@@ -62,9 +62,14 @@ printInfo()
 }
 
 ## Print Error msg and icon 
-printErr()
+printError()
 {
 	echo "($crossmark1) ERROR : $1"
+}
+
+printFlag()
+{
+	echo "($blackFlag) : $1"
 }
 
 
@@ -82,8 +87,8 @@ addPropertyToList()
 	echo "Using provided arguments to create list."
 	if [[ $# -ne 3 ]]
 	then
-		printErr "Not enough arguments to add property to the list"
-		echo "($blackFlag) : Exiting script with Error Code $notEnoughArgs."
+		printError "Not enough arguments to add property to the list"
+		printFlag "Exiting script with Error Code $notEnoughArgs."
 		#echo "($info) Info : Find all exit codes in 'Exit Codes' section."
 		printInfo "Find all exit codes in 'Exit Codes' section."
 		exit $notEnoughArgs
