@@ -45,6 +45,8 @@ star2="✩"
 star3="✪"
 star4="✭" 
 
+info="ℹ"
+
 ############# EXIT CODES
 notEnoughArgs=44
 
@@ -71,7 +73,7 @@ addPropertyToList()
 	then
 		echo "ERROR : ($crossmark1) Not enough arguments to add property to the list"
 		echo "($blackFlag) : Exiting script with Error Code $notEnoughArgs."
-		echo "Find all exit codes in 'Exit Codes' section."
+		echo "($info)Find all exit codes in 'Exit Codes' section."
 		exit $notEnoughArgs
 	else
 		echo "Creating property CustomPreviousBundleShortVersionString."
@@ -211,7 +213,7 @@ fi
 
 if [[ $RETURNPVERSIONBUID -ne 0 ]]
 then    
-    echo "Previous Build Number does not exists"
+    debugMsg "Previous Build Number does not exists"
 	#### AUTOMATIC PROPERTY CREATETOR CODE IS BELOW
 	/usr/libexec/PlistBuddy -c "Add :CustomPreviousBundleVersion String $VERSIONBUILB" $plistFile
 	debugMSG "Write process is done, return code is $?"
