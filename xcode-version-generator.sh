@@ -55,6 +55,17 @@ notEnoughArgs=44
 #plistFile="${PROJECT_DIR}/${INFOPLIST_FILE}"
 plistFile="InfoT2.plist"
 
+## Print info Msg and icon
+printInfo()
+{
+	echo "($info) Info : $1"
+}
+
+## Print Error msg and icon 
+printErr()
+{
+	echo "($crossmark1) ERROR : $1"
+}
 
 
 ### DEBUG Message function 
@@ -71,9 +82,10 @@ addPropertyToList()
 	echo "Using provided arguments to create list."
 	if [[ $# -ne 3 ]]
 	then
-		echo "ERROR : ($crossmark1) Not enough arguments to add property to the list"
+		printErr "Not enough arguments to add property to the list"
 		echo "($blackFlag) : Exiting script with Error Code $notEnoughArgs."
-		echo "($info)Find all exit codes in 'Exit Codes' section."
+		#echo "($info) Info : Find all exit codes in 'Exit Codes' section."
+		printInfo "Find all exit codes in 'Exit Codes' section."
 		exit $notEnoughArgs
 	else
 		echo "Creating property CustomPreviousBundleShortVersionString."
@@ -87,7 +99,7 @@ addPropertyToList()
 			debugMsg "Property $1 Added to the $plistFile"
 		fi
 	fi 
-	debugMsg "testing"
+	debugMsg "end of Add Property function."
 }
 
 
