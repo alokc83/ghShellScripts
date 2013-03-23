@@ -22,11 +22,3 @@ Revision 3 @ gist : Able to handle if custom property exist but having no value.
 Added more function for ease of understanding 
 Added extractVersionNumbers, 
 extractPreviousVersionNumbers, debugMsg Functions.
-
-#debugMsg() : print the debug msg all over in script and turn them off with single switch
-#addPropertyToList() : Function to add propert to plist takes 3 agrs prop name, type and value
-#updatePlist() : updating the plist if properties already exists
-#versionValues() : printing current value of version variables
-#whatsUpdate()
-#extractVersionNumbers() : Extracting major, minor and revision from version string
-#extractPreviousVersionNumbers() :Extracting major, minor and revision from previous version string
