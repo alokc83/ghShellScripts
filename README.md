@@ -2,11 +2,15 @@ ghShellScripts
 ==============
 
 xcode-version-generator.sh
+
 Description:
+
 <<<<<<<<<< BETA Version >>>>>>>>>>>>>>> 
+
 KNOWN ISSUES : 
 1] Design to not to handle Major and Minor version
-2] Manual override is needed when minor version changes. To correctly set the previous minor number and revision accordingly.
+2] Manual override is needed when minor version changes. To correctly set the previous minor number and revision 
+accordingly.
 
 This automatic version generator. basis of following format 
 (Major version).(Minor Version).(Revision) 
