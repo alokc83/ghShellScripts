@@ -25,7 +25,7 @@
 #set -x
 
 ######### DEBUG MSG function YES to Enable, No to Disable 
-DEBUG="NO" # Set DEBUG YES(Enable) or NO(Disable)
+DEBUG="YES" # Set DEBUG YES(Enable) or NO(Disable)
 
 ######### SYMBOLIC CONSTANT  
 blackFlag="⚑"
@@ -52,8 +52,8 @@ notEnoughArgs=44
 
 
 #DEFINEING THE CONST VALUES
-#plistFile="${PROJECT_DIR}/${INFOPLIST_FILE}"
-plistFile="InfoT2.plist"
+plistFile="${PROJECT_DIR}/${INFOPLIST_FILE}"
+#plistFile="InfoT2.plist" ## TESTING FILE NAME
 
 ## Print info Msg and icon
 printInfo()
@@ -188,7 +188,7 @@ then
 	echo "Previous version string does not exists"
 	#### AUTOMATIC PROPERTY CREATETOR CODE 
 	#/usr/libexec/PlistBuddy -c "Add :CustomPreviousBundleShortVersionString String $VERSIONSTRING" $plistFile
-	addPropertyToList "CustomPreviousBundleShortVersionString" "String" #$VERSIONSTRING
+	addPropertyToList "CustomPreviousBundleShortVersionString" "String" $VERSIONSTRING
 	#echo "Write process is done, return code is $?. Zero means property created with value $VERSIONSTRING"
 	PVERSIONSTRING=$VERSIONSTRING
 else 
@@ -226,14 +226,14 @@ then
 	PREVISION=$(($REVISION - 1))
 fi 
 
-######### SECTION TO BE REMOVED #############
+######### CHECK IF PREVIOUS BUID EXISTS OR NOT #############
 
 if [[ $RETURNPVERSIONBUID -ne 0 ]]
 then    
     debugMsg "Previous Build Number does not exists"
 	#### AUTOMATIC PROPERTY CREATETOR CODE IS BELOW
 	/usr/libexec/PlistBuddy -c "Add :CustomPreviousBundleVersion String $VERSIONBUILB" $plistFile
-	debugMSG "Write process is done, return code is $?"
+	debugMsg "Write process is done, return code is $?"
 	PVERSIONBUILD=$VERSIONBUILB
 else
         debugMsg "Previous build number exists, it is $PVERSIONBUILD."
@@ -242,23 +242,5 @@ fi
 debugMsg "[$PVERSIONSTRING]"
 debugMsg "[$PVERSIONBUILD]"
 
-#/usr/libexec/PlistBuddy -c "Add :CustomPreviousBundleShortVersionString String $VERSIONSTRING" "InfoT2.plist"
-#echo "Write process is done, return code is $?"
 
 ##########################################################################
-
-
-#NEWVERSIONSTRING=`echo $VERSIONSTRING | awk -F "." '{print $1 "." $2 ".'$NEWSUBVERSION'" }'`
-
-
-
-
-#/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEWVERSIONSTRING" "${PROJECT_DIR}/${INFOPLIST_FILE}"
-#/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEWVERSIONSTRING" "InfoT2.plist"
-#echo "Setting CFBundleShortVersionString property to $NEWVERSIONSTRING. Exit Code is $?"
-
-#Setting up Previous Version String
-#PVERSIONSTRING=`echo $PMAJORVERSION.$PMINORVERSION.$PREVISION`
-#/usr/libexec/PlistBuddy -c "Set :CustomPreviousBundleShortVersionString $PVERSIONSTRING" "InfoT2.plist"
-#echo "Setting CustomPreviousBundleShortVersionString property to $VERSIONSTRING. Exit Code is $?"
-
