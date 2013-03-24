@@ -1,14 +1,6 @@
-#!/bin/bash
-# xcode-version-generator.sh
-# @desc Auto-increment the version number (only) when a project is archived for export.
-# @usage
-# 1. Select: your Target in Xcode
-# 2. Select: Build Phases Tab
-# 3. Select: Add Build Phase -> Add Run Script
-# 4. Paste code below in to new "Run Script" section
-# 5. Check the checkbox "Run script only when installing"
-# 6. Drag the "Run Script" below "Link Binaries With Libraries"
-# 7. Insure your starting version number is in SemVer format (e.g. 1.0.0)
+# FileName : functions.include
+# Desc : Definition of all function that are being brewed at my lab.
+
 
 
 ############################FUNCTIONS PRESENT IN SCRIPT ##########################
@@ -159,80 +151,3 @@ extractPreviousVersionNumbers()
 	PREVISION=`echo $PVERSIONSTRING | awk -F "." '{print $3}'`
 }
 
-
-
-
-VERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" $plistFile)
-VERSIONBUILB=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" $plistFile)
-
-PVERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleShortVersionString" $plistFile)
-RETURNPVERSIONSTRING=$?
-debugMsg "Return code for version built $RETURNPVERSIONSTRING"
-PVERSIONBUILD=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleVersion" $plistFile)
-RETURNPVERSIONBUID=$?
-debugMsg "Return code for build number $RETURNPVERSIONBUID"
-
-#PVERSIONSTRING
-#VERSIONSTRING="1.2.0"
-#VERSIONBUILB='3212013'
-
-if [[ $RETURNPVERSIONSTRING -ne 0 ]] #Previous version property does not exists
-then
-	echo "Previous version string does not exists"
-	#### AUTOMATIC PROPERTY CREATETOR CODE 
-	addPropertyToList "CustomPreviousBundleShortVersionString" "String" $VERSIONSTRING
-	#echo "Write process is done, return code is $?. Zero means property created with value $VERSIONSTRING"
-	PVERSIONSTRING=$VERSIONSTRING
-else 
-	debugMsg "Previous version number exists, it is $PVERSIONSTRING."
-	extractVersionNumbers #Extract Major, Minor and Revision from Version String
-	extractPreviousVersionNumbers #Extract Major, Minor and Revision from PRevious Version String
-	
-	if [[ $MINORVERSION -gt $PMINORVERSION ]]
-	then
-		debugMsg "Minor version is incremented. Setting revision to Zero"
-		REVISION=0
-		updatePlist #Function Call
-		#versionValues #Function Call
-	else
-		PVERSIONSTRING=$VERSIONSTRING
-		debugMsg "Incrementing Revision By One"
-		REVISION=$(($REVISION + 1))
-		updatePlist #Function Call
-		#versionValues #Function Call
-		debugMsg "new = $NEWVERSIONSTRING, Previous = $PVERSIONSTRING"
-	fi
-	
-fi
-
-#### SYNCING Current and Previous version String
-if [[ $MAJORVERSION -ne $PMAJORVERSION || $MINORVERSION -ne $PMINORVERSION ]]
-then 
-	echo "Current and previous version strings are out of sync. Manual override needed"
-else
-	echo "Current and previous version string are in sync. No action needed"
-fi
-
-if [[ $REVISION -gt 0 && $REVISION < $PREVISION ]]
-then
-	PREVISION=$(($REVISION - 1))
-fi 
-
-######### CHECK IF PREVIOUS BUID EXISTS OR NOT #############
-
-if [[ $RETURNPVERSIONBUID -ne 0 ]]
-then    
-    debugMsg "Previous Build Number does not exists"
-	#### AUTOMATIC PROPERTY CREATETOR CODE IS BELOW
-	/usr/libexec/PlistBuddy -c "Add :CustomPreviousBundleVersion String $VERSIONBUILB" $plistFile
-	debugMsg "Write process is done, return code is $?"
-	PVERSIONBUILD=$VERSIONBUILB
-else
-        debugMsg "Previous build number exists, it is $PVERSIONBUILD."
-fi
-##############################################
-debugMsg "[$PVERSIONSTRING]"
-debugMsg "[$PVERSIONBUILD]"
-
-
-##########################################################################
