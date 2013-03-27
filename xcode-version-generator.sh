@@ -24,10 +24,10 @@
 ## ONLY UNCOMMENT BELOW LINE FOR THE PURPOSE OF DEBUGGING
 #set -x
 
-######### DEBUG MSG function YES to Enable, No to Disable 
-DEBUG="YES" # Set DEBUG YES(Enable) or NO(Disable)
+######### DEBUG MSG function YES to Enable, No to Disable
+DEBUG="NO" # Set DEBUG YES(Enable) or NO(Disable)
 
-######### SYMBOLIC CONSTANT  
+######### SYMBOLIC CONSTANT
 blackFlag="⚑"
 whiteFlag="⚐"
 leftBlackArrow="◀"
@@ -43,7 +43,7 @@ tickmark2="✔"
 star1="☆"
 star2="✩"
 star3="✪"
-star4="✭" 
+star4="✭"
 
 info="ℹ"
 
@@ -53,7 +53,7 @@ notEnoughArgs=44
 
 #DEFINEING THE CONST VALUES
 #plistFile="${PROJECT_DIR}/${INFOPLIST_FILE}"
-plistFile="InfoT2.plist" ## TESTING FILE NAME
+plistFile="Indian Prayers-Info.plist" ## TESTING FILE NAME
 
 ## Print info Msg and icon
 printInfo()
@@ -61,7 +61,7 @@ printInfo()
 	echo "($info) Info : $1"
 }
 
-## Print Error msg and icon 
+## Print Error msg and icon
 printError()
 {
 	echo "($crossmark1) ERROR : $1"
@@ -73,7 +73,7 @@ printFlag()
 }
 
 
-### DEBUG Message function 
+### DEBUG Message function
 debugMsg()
 {
 	if [[ $DEBUG == "YES" ]]
@@ -84,46 +84,47 @@ debugMsg()
 
 addPropertyToList()
 {
-	echo "Using provided arguments to create list."
+	echo "Using provided arguments to create property."
 	if [[ $# -ne 3 ]]
 	then
-		printError "Not enough arguments to add property to the list"
-		printFlag "Exiting script with Error Code $notEnoughArgs."
-		#echo "($info) Info : Find all exit codes in 'Exit Codes' section."
-		printInfo "Find all exit codes in 'Exit Codes' section."
-		exit $notEnoughArgs
+    debugMsg "$#"
+    printError "Not enough arguments to add property to the list"
+    printFlag "Exiting script with Error Code $notEnoughArgs."
+    #echo "($info) Info : Find all exit codes in 'Exit Codes' section."
+    printInfo "Find all exit codes in 'Exit Codes' section."
+    exit $notEnoughArgs
 	else
-		echo "Creating property CustomPreviousBundleShortVersionString."
-		/usr/libexec/PlistBuddy -c "Add :$1 $2 $3" $plistFile
-		RC=$?
-		if [[ RC -ne 0 ]]
-		then 
-			echo "ERROR : $blackFlag $doubleArrow Exit with error code $?"
-			exit $?
-		else 
-			debugMsg "Property $1 Added to the $plistFile"
-		fi
-	fi 
+    echo "Creating property CustomPreviousBundleShortVersionString."
+    /usr/libexec/PlistBuddy -c "Add :$1 $2 $3" "$plistFile"
+    RC=$?
+    if [[ RC -ne 0 ]]
+    then
+    echo "ERROR : $blackFlag $doubleArrow Exit with error code $?"
+    exit $?
+    else
+    debugMsg "Property $1 Added to the $plistFile"
+    fi
+	fi
 	debugMsg "end of Add Property function."
 }
 
 
-##### FUNCTION TO UPDATE plist 
+##### FUNCTION TO UPDATE plist
 updatePlist()
 {
-
-#/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEWVERSIONSTRING" "${PROJECT_DIR}/${INFOPLIST_FILE}"
-NEWVERSIONSTRING=`echo $MAJORVERSION.$MINORVERSION.$REVISION`
-/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEWVERSIONSTRING" $plistFile
-debugMsg "Exit Code is $?"
-echo "Setting CFBundleShortVersionString property to $NEWVERSIONSTRING."
-
-#Setting up Previous Version String
-PVERSIONSTRING=`echo $PMAJORVERSION.$PMINORVERSION.$(($REVISION - 1))`
-/usr/libexec/PlistBuddy -c "Set :CustomPreviousBundleShortVersionString $PVERSIONSTRING" $plistFile
-debugMsg "Exit Code is $?"
-echo "Setting CustomPreviousBundleShortVersionString property to $PVERSIONSTRING."
-
+    
+    #/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEWVERSIONSTRING" "${PROJECT_DIR}/${INFOPLIST_FILE}"
+    NEWVERSIONSTRING=`echo $MAJORVERSION.$MINORVERSION.$REVISION`
+    /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEWVERSIONSTRING" "$plistFile"
+    debugMsg "Exit Code is $?"
+    echo "Setting CFBundleShortVersionString property to $NEWVERSIONSTRING."
+    
+    #Setting up Previous Version String
+    PVERSIONSTRING=`echo $PMAJORVERSION.$PMINORVERSION.$(($REVISION - 1))`
+    /usr/libexec/PlistBuddy -c "Set :CustomPreviousBundleShortVersionString $PVERSIONSTRING" "$plistFile"
+    debugMsg "Exit Code is $?"
+    echo "Setting CustomPreviousBundleShortVersionString property to $PVERSIONSTRING."
+    
 }  #end of function
 
 
@@ -143,7 +144,7 @@ whatsUpdate()
 } #ENd of function
 
 #Extract Major, Minor and Revision from Version String
-extractVersionNumbers() 
+extractVersionNumbers()
 {
 	MAJORVERSION=`echo $VERSIONSTRING | awk -F "." '{print $1}'`
 	MINORVERSION=`echo $VERSIONSTRING | awk -F "." '{print $2}'`
@@ -153,7 +154,7 @@ extractVersionNumbers()
 #Extract Major, Minor and Revision from PRevious Version String
 extractPreviousVersionNumbers()
 {
-	#Extracting Previous Version 
+	#Extracting Previous Version
 	PMAJORVERSION=`echo $PVERSIONSTRING | awk -F "." '{print $1}'`
 	PMINORVERSION=`echo $PVERSIONSTRING | awk -F "." '{print $2}'`
 	PREVISION=`echo $PVERSIONSTRING | awk -F "." '{print $3}'`
@@ -161,74 +162,73 @@ extractPreviousVersionNumbers()
 
 
 
+#Read the if Property file
+# This splits a two-decimal version string, such as "0.45.123", allowing us to increment the third position.
 
-VERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" $plistFile)
-VERSIONBUILB=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" $plistFile)
+VERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$plistFile")
+VERSIONBUILB=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$plistFile")
 
-PVERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleShortVersionString" $plistFile)
+PVERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleShortVersionString" "$plistFile")
 RETURNPVERSIONSTRING=$?
 debugMsg "Return code for version built $RETURNPVERSIONSTRING"
-PVERSIONBUILD=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleVersion" $plistFile)
+PVERSIONBUILD=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleVersion" "$plistFile")
 RETURNPVERSIONBUID=$?
 debugMsg "Return code for build number $RETURNPVERSIONBUID"
 
-#PVERSIONSTRING
-#VERSIONSTRING="1.2.0"
-#VERSIONBUILB='3212013'
-
 if [[ $RETURNPVERSIONSTRING -ne 0 ]] #Previous version property does not exists
 then
-	echo "Previous version string does not exists"
-	#### AUTOMATIC PROPERTY CREATETOR CODE 
-	addPropertyToList "CustomPreviousBundleShortVersionString" "String" $VERSIONSTRING
-	#echo "Write process is done, return code is $?. Zero means property created with value $VERSIONSTRING"
-	PVERSIONSTRING=$VERSIONSTRING
-else 
-	debugMsg "Previous version number exists, it is $PVERSIONSTRING."
-	extractVersionNumbers #Extract Major, Minor and Revision from Version String
-	extractPreviousVersionNumbers #Extract Major, Minor and Revision from PRevious Version String
-	
-	if [[ $MINORVERSION -gt $PMINORVERSION ]]
-	then
-		debugMsg "Minor version is incremented. Setting revision to Zero"
-		REVISION=0
-		updatePlist #Function Call
-		#versionValues #Function Call
-	else
-		PVERSIONSTRING=$VERSIONSTRING
-		debugMsg "Incrementing Revision By One"
-		REVISION=$(($REVISION + 1))
-		updatePlist #Function Call
-		#versionValues #Function Call
-		debugMsg "new = $NEWVERSIONSTRING, Previous = $PVERSIONSTRING"
-	fi
-	
+echo "Previous version string does not exists"
+#### AUTOMATIC PROPERTY CREATETOR CODE
+#/usr/libexec/PlistBuddy -c "Add :CustomPreviousBundleShortVersionString String $VERSIONSTRING" "$plistFile"
+addPropertyToList "CustomPreviousBundleShortVersionString" "String" $VERSIONSTRING
+#echo "Write process is done, return code is $?. Zero means property created with value $VERSIONSTRING"
+PVERSIONSTRING=$VERSIONSTRING
+else
+debugMsg "Previous version number exists, it is $PVERSIONSTRING."
+extractVersionNumbers #Extract Major, Minor and Revision from Version String
+extractPreviousVersionNumbers #Extract Major, Minor and Revision from PRevious Version String
+
+if [[ $MINORVERSION -gt $PMINORVERSION ]]
+then
+debugMsg "Minor version is incremented. Setting revision to Zero"
+REVISION=0
+updatePlist #Function Call
+#versionValues #Function Call
+else
+PVERSIONSTRING=$VERSIONSTRING
+debugMsg "Incrementing Revision By One"
+REVISION=$(($REVISION + 1))
+updatePlist #Function Call
+#versionValues #Function Call
+debugMsg "new = $NEWVERSIONSTRING, Previous = $PVERSIONSTRING"
+fi
+
 fi
 
 #### SYNCING Current and Previous version String
 if [[ $MAJORVERSION -ne $PMAJORVERSION || $MINORVERSION -ne $PMINORVERSION ]]
-then 
-	echo "Current and previous version strings are out of sync. Manual override needed"
+then
+echo "Current and previous version strings are out of sync. Manual override needed"
 else
-	echo "Current and previous version string are in sync. No action needed"
+echo "Current and previous version string are in sync. No action needed"
 fi
 
 if [[ $REVISION -gt 0 && $REVISION < $PREVISION ]]
 then
-	PREVISION=$(($REVISION - 1))
-fi 
+PREVISION=$(($REVISION - 1))
+fi
 
 ######### CHECK IF PREVIOUS BUID EXISTS OR NOT #############
 
 if [[ $RETURNPVERSIONBUID -ne 0 ]]
-then    
-    debugMsg "Previous Build Number does not exists"
-	#### AUTOMATIC PROPERTY CREATETOR CODE IS BELOW
-	/usr/libexec/PlistBuddy -c "Add :CustomPreviousBundleVersion String $VERSIONBUILB" $plistFile
-	debugMsg "Write process is done, return code is $?"
-	PVERSIONBUILD=$VERSIONBUILB
+then
+debugMsg "Previous Build Number does not exists"
+#### AUTOMATIC PROPERTY CREATETOR CODE IS BELOW
+/usr/libexec/PlistBuddy -c "Add :CustomPreviousBundleVersion String $VERSIONBUILB" "$plistFile"
+debugMsg "Write process is done, return code is $?"
+PVERSIONBUILD=$VERSIONBUILB
 else
-        debugMsg "Previous build number exists, it is $PVERSIONBUILD."
+debugMsg "Previous build number exists, it is $PVERSIONBUILD."
 fi
 ##############################################
 debugMsg "[$PVERSIONSTRING]"
