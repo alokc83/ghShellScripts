@@ -14,9 +14,13 @@
 # http://www.codinghorror.com/blog/2007/02/whats-in-a-version-number-anyway.html (For unferstanding the Software Versoining)
 #Feel free to leave comment or report issues
 
-#plist File 
-#plistFile=${INFOPLIST_FILE}
-plistFile="InfoT2.plist"
+#CHECKING WHICH info.plist need to be used
+if [[ -e ${INFOPLIST_FILE} ]]
+then
+    plistFile="${INFOPLIST_FILE}"
+else
+    plistFile="InfoT2.plist"
+fi 
 
 MONTH=`date | awk '{print $2}'`
 

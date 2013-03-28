@@ -53,7 +53,7 @@ notEnoughArgs=44
 ### Echoing the name of script running [Debugging purpose]
 echo "$0 IS RUNNING."
 
-#DEFINEING THE CONST VALUES
+#CHECKING WHICH info.plist need to be used
 if [[ -e ${INFOPLIST_FILE} ]]
 then
     plistFile="${INFOPLIST_FILE}"
@@ -188,6 +188,7 @@ VERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$
 PVERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleShortVersionString" "$plistFile")
 RETURNPVERSIONSTRING=$?
 debugMsg "Return code for version built $RETURNPVERSIONSTRING"
+debugMsg "$PVERSIONSTRING"
 
 VERSIONBUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$plistFile")
 PVERSIONBUILD=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleVersion" "$plistFile")
