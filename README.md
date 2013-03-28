@@ -8,9 +8,12 @@ Description:
 <<<<<<<<<< BETA Version >>>>>>>>>>>>>>> 
 
 KNOWN ISSUES : 
+0] if there is/are space(s) in the project path, Script will be broken. You need to manually override variable $plistFile.
+
 1] Design to not to handle Major and Minor version
 2] Manual override is needed when minor version changes. To correctly set the previous minor number and revision 
 accordingly.
+
 
 This automatic version generator. basis of following format 
 (Major version).(Minor Version).(Revision) 
