@@ -54,7 +54,12 @@ notEnoughArgs=44
 echo "$0 IS RUNNING."
 
 #DEFINEING THE CONST VALUES
-plistFile="${INFOPLIST_FILE}"
+if [[ -e ${INFOPLIST_FILE} ]]
+then
+    plistFile="${INFOPLIST_FILE}"
+else
+    plistFile="InfoT2.plist"
+fi 
 
 ## Print info Msg and icon
 printInfo()
@@ -113,19 +118,20 @@ addPropertyToList()
 ##### FUNCTION TO UPDATE plist 
 updatePlist()
 {
-
+debugMsg "updatePlist fucntion starts."
 #/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEWVERSIONSTRING" "${PROJECT_DIR}/${INFOPLIST_FILE}"
 NEWVERSIONSTRING=`echo $MAJORVERSION.$MINORVERSION.$REVISION`
-/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEWVERSIONSTRING" $plistFile
+/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEWVERSIONSTRING" "$plistFile"
 debugMsg "Exit Code is $?"
 echo "Setting CFBundleShortVersionString property to $NEWVERSIONSTRING."
 
 #Setting up Previous Version String
 PVERSIONSTRING=`echo $PMAJORVERSION.$PMINORVERSION.$(($REVISION - 1))`
-/usr/libexec/PlistBuddy -c "Set :CustomPreviousBundleShortVersionString $PVERSIONSTRING" $plistFile
+/usr/libexec/PlistBuddy -c "Set :CustomPreviousBundleShortVersionString $PVERSIONSTRING" "$plistFile"
 debugMsg "Exit Code is $?"
 echo "Setting CustomPreviousBundleShortVersionString property to $PVERSIONSTRING."
 
+debugMsg "updatePlist function ends."
 }  #end of function
 
 
@@ -161,6 +167,7 @@ extractPreviousVersionNumbers()
 	PREVISION=`echo $PVERSIONSTRING | awk -F "." '{print $3}'`
 }
 
+
 ### DEBUGGING BLOCK, BEFORE DOING ANYTHING SERIOUS :)
 debugMsg "$plistFile"
 #DOLS=`ls "plistFile"`
@@ -178,15 +185,17 @@ debugMsg "Actual info-plist location = $INFOPLIST"
 #### DEBUG BLOCK ENDS ##########
 
 VERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$plistFile")
-VERSIONBUILB=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$plistFile")
-debugMsg "Value of version_string = VERSIONSTRING, version_build=$VERSIONBUILB"
-
-PVERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleShortVersionString" $plistFile)
+PVERSIONSTRING=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleShortVersionString" "$plistFile")
 RETURNPVERSIONSTRING=$?
 debugMsg "Return code for version built $RETURNPVERSIONSTRING"
+
+VERSIONBUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$plistFile")
 PVERSIONBUILD=$(/usr/libexec/PlistBuddy -c "Print CustomPreviousBundleVersion" "$plistFile")
 RETURNPVERSIONBUID=$?
-debugMsg "Return code for build number $RETURNPVERSIONBUID"
+debugMsg "Return code for previous build $RETURNPVERSIONBUID"
+
+debugMsg "Version_string = $VERSIONSTRING, Previous Version=$PVERSIONSTRING"
+debugMsg "Version Build = $VERSIONBUILD, Previous Build = $PVERSIONBUILD"
 
 
 if [[ $RETURNPVERSIONSTRING -ne 0 ]] #Previous version property does not exists
@@ -238,15 +247,25 @@ if [[ $RETURNPVERSIONBUID -ne 0 ]]
 then    
     debugMsg "Previous Build Number does not exists"
 	#### AUTOMATIC PROPERTY CREATETOR CODE IS BELOW
-	/usr/libexec/PlistBuddy -c "Add :CustomPreviousBundleVersion String $VERSIONBUILB" $plistFile
+	addPropertyToList "CustomPreviousBundleVersion" "String" "$VERSIONBUILD"
 	debugMsg "Write process is done, return code is $?"
 	PVERSIONBUILD=$VERSIONBUILB
 else
-        debugMsg "Previous build number exists, it is $PVERSIONBUILD."
+        debugMsg "Previous build number exists, it is $PVERSIONBUILD. current build = $VERSIONBUILD"
+        if [[ $VERSIONBUILD -gt $PVERSIONBUILD ]]
+        then
+        	PVERSIONBUILD=$VERSIONBUILD
+        	debugMsg "VERSIONBUILD is assinged to PVERSIONBUILD"
+        	/usr/libexec/PlistBuddy -c "Set :CustomPreviousBundleVersion $PVERSIONBUILD" "$plistFile"
+        	
+         else
+         	debugMsg "VERSION BUILD AND PVERSIONBUILD ARE SAME" 
+         fi 
 fi
 ##############################################
-debugMsg "[$PVERSIONSTRING]"
-debugMsg "[$PVERSIONBUILD]"
+debugMsg "previous verison [$PVERSIONSTRING]"
+debugMsg "previous [$PVERSIONBUILD]"
+debugMsg "previous [$VERSIONBUILD]"
 
 
 ##########################################################################

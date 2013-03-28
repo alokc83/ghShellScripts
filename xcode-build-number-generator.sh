@@ -14,46 +14,48 @@
 # http://www.codinghorror.com/blog/2007/02/whats-in-a-version-number-anyway.html (For unferstanding the Software Versoining)
 #Feel free to leave comment or report issues
 
+#plist File 
+#plistFile=${INFOPLIST_FILE}
+plistFile="InfoT2.plist"
 
 MONTH=`date | awk '{print $2}'`
 
 case "$MONTH" in
   	'Jan' | [Jj][Aa][Na] )
-         MONTHNUMBER=1
+         MONTHNUMBER="01"
 	 ;;
 	'Feb' |[Ff][Ee][Bb])
-         MONTHNUMBER=2
+         MONTHNUMBER="02"
 	;;
 	'Mar' |[Mm][Aa][Rr])
-	MONTHNUMBER=3
-	echo "Month is $MONTHNUMBER"
+	MONTHNUMBER="03"
 	;;
 	'Apr' |[Aa][Pp][Rr])
-         MONTHNUMBER=4
+         MONTHNUMBER="04"
 	;;
 	'May' |[Mm][Aa][Yy])
-         MONTHNUMBER=5
+         MONTHNUMBER="05"
         ;;
 	'Jun' |[Jj][Uu][Nn])
-         MONTHNUMBER=6
+         MONTHNUMBER="06"
         ;;
 	'Jul' |[Jj][Uu][Ll])
-         MONTHNUMBER=7
+         MONTHNUMBER="07"
         ;;
 	'Aug' |[Aa][Uu][Gg])
-         MONTHNUMBER=8
+         MONTHNUMBER="08"
         ;;
 	'Sep' |[Ss][Ee][Pp])
-         MONTHNUMBER=9
+         MONTHNUMBER="09"
         ;;
 	'Oct' |[Oo][Cc][Tt])
-         MONTHNUMBER=10
+         MONTHNUMBER="10"
         ;;
 	'Nov' |[Nn][Oo][Vv])
-         MONTHNUMBER=11
+         MONTHNUMBER="11"
         ;;
 	'Dec' |[Dd][Ee][Cc])
-         MONTHNUMBER=12
+         MONTHNUMBER="12"
         ;;
 esac
 
@@ -72,10 +74,13 @@ echo "Date = $YEAR"
 #### Uncomment only one one style or last one will be in effect
 #buildNumber=$MONTH$DATE$YEAR
 #buildNumber=$DATE$MONTH$YEAR
-buildNumber=$MONTHNUMBER$DATE$YEAR
+#buildNumber=$MONTHNUMBER$DATE$YEAR
 #buildNumber=$DATE$MONTHNUMBER$YEAR
+buildNumber=$YEAR$MONTHNUMBER$DATE
 
 
 echo "Final Build number is $buildNumber"
+echo "$plistFile"
 ## Below command write buildNumber in the property list
-/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "${PROJECT_DIR}/${INFOPLIST_FILE}"
+#/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "${PROJECT_DIR}/${INFOPLIST_FILE}"
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "$plistFile"
