@@ -65,6 +65,45 @@ esac
 
 DATE=`date | awk '{print $3}'`
 echo "Date = $DATE"
+
+case $DATE in
+  	1 )
+         DATE="01"
+	 ;;
+
+	2 )
+         DATE="02"
+	 ;;
+	
+	3 )
+         DATE="03"
+	 ;;
+	 
+	4 )
+         DATE="04"
+	 ;;
+
+  	5)
+         DATE="05"
+	 ;;
+
+	6 )
+         DATE="06"
+	 ;;
+	
+	7 )
+         DATE="07"
+	 ;;
+	 
+	8 )
+         DATE="08"
+	 ;;	 
+	 
+	9 )
+		 DATE="09"
+	 ;; 
+esac
+
 YEAR=`date | awk '{print $6}'`
 echo "Date = $YEAR"
 
@@ -86,5 +125,4 @@ buildNumber=$YEAR$MONTHNUMBER$DATE
 echo "Final Build number is $buildNumber"
 echo "$plistFile"
 ## Below command write buildNumber in the property list
-#/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "${PROJECT_DIR}/${INFOPLIST_FILE}"
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "$plistFile"
